@@ -1,10 +1,12 @@
 import 'package:callinteligence/data/sections_list.dart';
+import 'package:callinteligence/session/session_client.dart';
 import 'package:callinteligence/theme/light_theme.dart';
 import 'package:callinteligence/utils/responsive.dart';
 import 'package:callinteligence/widgets/app_bar_item.dart';
 import 'package:callinteligence/widgets/buttons.dart';
 import 'package:callinteligence/widgets/dialogs.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:ionicons/ionicons.dart';
 
 class MainAppBar extends StatefulWidget {
@@ -26,6 +28,7 @@ class MainAppBar extends StatefulWidget {
 class _MainAppBarState extends State<MainAppBar> with TickerProviderStateMixin {
   final LightTheme _lightTheme = LightTheme();
   late bool showContent;
+  late SessionClient sessionClient = GetIt.instance<SessionClient>();
 
   @override
   void initState() {

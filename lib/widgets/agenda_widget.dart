@@ -14,7 +14,7 @@ class AgendaWidget extends StatelessWidget {
     final LightTheme lightTheme = LightTheme();
     return Container(
       width: responsive.wp(88),
-      height: responsive.hp(31),
+      height: responsive.hp(32),
       margin: EdgeInsets.only(bottom: responsive.hp(2)),
       padding: EdgeInsets.only(
           bottom: responsive.hp(2),

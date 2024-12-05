@@ -125,7 +125,7 @@ class HistorySortResults extends StatelessWidget {
             ),
           ),
           SizedBox(
-            width: responsive.wp(44.4),
+            width: responsive.wp(40.4),
           ),
           IconButton(
             onPressed: () {

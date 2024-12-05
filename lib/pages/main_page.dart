@@ -57,7 +57,7 @@ class MainPage extends StatelessWidget {
                     fontWeight: FontWeight.bold),
               ),
               Text(
-                user.position,
+                user.email,
                 style: TextStyle(
                     color: lightTheme.secondaryTextColor,
                     fontSize: responsive.dp(1.5),

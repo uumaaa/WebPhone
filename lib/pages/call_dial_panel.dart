@@ -1,4 +1,5 @@
 import 'package:callinteligence/data/dial_list.dart';
+import 'package:callinteligence/model/user.dart';
 import 'package:callinteligence/theme/light_theme.dart';
 import 'package:callinteligence/utils/responsive.dart';
 import 'package:callinteligence/widgets/buttons.dart';
@@ -10,7 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 
 class CallDial extends StatefulWidget {
-  const CallDial({super.key});
+  const CallDial({super.key, required this.user});
+  final User user;
 
   @override
   State<CallDial> createState() => _CallDialState();
@@ -89,10 +91,11 @@ class _CallDialState extends State<CallDial> with TickerProviderStateMixin {
                         width: responsive.wp(3),
                       ),
                       Text(
-                        "Tu nombre",
+                        widget.user.name,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                             color: lightTheme.secondaryTextColor,
-                            fontSize: responsive.dp(3),
+                            fontSize: responsive.dp(2),
                             fontWeight: FontWeight.w300),
                       ),
                     ],
@@ -173,7 +176,7 @@ class _CallDialState extends State<CallDial> with TickerProviderStateMixin {
                 return IconButton(
                   highlightColor: lightTheme.secondaryAccentColor,
                   style: ButtonStyle(
-                    shape: MaterialStatePropertyAll(
+                    shape: WidgetStatePropertyAll(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -193,7 +196,7 @@ class _CallDialState extends State<CallDial> with TickerProviderStateMixin {
           ),
           CallButton(
               width: responsive.wp(55),
-              height: responsive.hp(6),
+              height: responsive.hp(5),
               fontSize: responsive.dp(3),
               action: () {
                 setState(() {
@@ -251,10 +254,11 @@ class _CallDialState extends State<CallDial> with TickerProviderStateMixin {
                         width: responsive.wp(3),
                       ),
                       Text(
-                        "Tu nombre",
+                        widget.user.name,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                             color: lightTheme.secondaryTextColor,
-                            fontSize: responsive.dp(3),
+                            fontSize: responsive.dp(2),
                             fontWeight: FontWeight.w300),
                       ),
                     ],

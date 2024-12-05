@@ -7,7 +7,7 @@ const List<String> SECTIONS = [
   "Tablero",
   "Llamar",
   "Agenda",
-  "Equipo",
+  "Grabar",
   "Chats",
   "Notificaciones",
   "Historial"
@@ -17,7 +17,7 @@ const List<IconData> SECTIONS_ICONS = [
   Ionicons.grid,
   Ionicons.call,
   Ionicons.calendar,
-  Ionicons.people,
+  Ionicons.mic_circle,
   Ionicons.chatbubble,
   Ionicons.notifications,
   Ionicons.timer

@@ -1,3 +1,6 @@
+import 'package:callinteligence/pages/record_page.dart';
+import 'package:callinteligence/session/session_client.dart';
+import 'package:callinteligence/model/session.dart';
 import 'package:callinteligence/data/sections_list.dart';
 import 'package:callinteligence/model/user.dart';
 import 'package:callinteligence/pages/call_page.dart';
@@ -7,12 +10,13 @@ import 'package:callinteligence/utils/logs.dart';
 import 'package:callinteligence/utils/responsive.dart';
 import 'package:callinteligence/pages/agenda_page.dart';
 import 'package:callinteligence/widgets/app_bar.dart';
-import 'package:callinteligence/widgets/main_page.dart';
+import 'package:callinteligence/pages/main_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:get_it/get_it.dart';
 
 class ControllerPage extends StatefulWidget {
   const ControllerPage({super.key});
+  static String routeName = 'controller_page';
 
   @override
   State<ControllerPage> createState() => _ControllerPageState();
@@ -20,6 +24,7 @@ class ControllerPage extends StatefulWidget {
 
 class _ControllerPageState extends State<ControllerPage> {
   final LightTheme _lightTheme = LightTheme();
+  final SessionClient sessionClient = GetIt.instance<SessionClient>();
   late int currentIndex;
   @override
   void initState() {
@@ -67,7 +72,24 @@ class _ControllerPageState extends State<ControllerPage> {
                     SizedBox(
                       height: responsive.hp(2),
                     ),
-                    handlePage(currentIndex)
+                    FutureBuilder<List<Session?>>(
+                      future: Future.wait([sessionClient.currentSession]),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          if (snapshot.data != null) {
+                            Session session = snapshot.data![0]!;
+                            return handlePage(currentIndex, session);
+                          }
+                        }
+                        return SizedBox(
+                          height: responsive.hp(50),
+                          width: responsive.wp(80),
+                          child: Container(
+                            decoration: BoxDecoration(color: Colors.white),
+                          ),
+                        );
+                      },
+                    )
                   ],
                 ),
               ),
@@ -78,29 +100,35 @@ class _ControllerPageState extends State<ControllerPage> {
     );
   }
 
-  Widget handlePage(int index) {
+  Widget handlePage(int index, Session session) {
     if (index == 0) {
       return Column(
         children: [
           MainPage(
-            user: User(name: "Prueba", position: "Cargo"),
+            user: User(name: session.userName, email: session.userEmail),
           ),
         ],
       );
     }
     if (index == 1) {
-      return const CallPage();
+      return CallPage(
+        user: User(name: session.userName, email: session.userEmail),
+      );
     }
     if (index == 2) {
       return const AgendaPanel();
     }
+    if (index == 3) {
+      return RecordPage(
+        user: User(name: session.userName, email: session.userEmail),
+      );
+    }
     if (index == 6) {
       return const HistoryPage();
     }
-    return Container(
-      child: Center(
-        child: Text("En proceso"),
-      ),
+
+    return Center(
+      child: Text("En proceso"),
     );
   }
 }

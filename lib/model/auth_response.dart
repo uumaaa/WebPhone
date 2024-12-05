@@ -1,11 +1,9 @@
 class AuthenticationResponse {
   final String token;
-  final int expiresIn;
 
-  AuthenticationResponse({required this.token, required this.expiresIn});
+  AuthenticationResponse({required this.token});
   static AuthenticationResponse fromJson(Map<String, dynamic> json) =>
       AuthenticationResponse(
-        token: json['token'],
-        expiresIn: json['expiresIn'],
+        token: json['valid']['jwt']!,
       );
 }

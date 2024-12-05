@@ -1,18 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:callinteligence/auth/session.dart';
-import 'package:callinteligence/controller/auth_controller.dart';
-import 'package:callinteligence/http/http_response.dart';
+import 'package:callinteligence/model/session.dart';
+import 'package:callinteligence/api/ai_analytics_api.dart';
+import 'package:callinteligence/model/http_response.dart';
 import 'package:callinteligence/model/auth_response.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 
-class AuthenticationClient {
+class SessionClient {
   final FlutterSecureStorage _secureStore;
-  final AuthentificationController _authentificationApi;
+  final AIAnalyticsAPI _aiAnalyticsAPI;
   Completer? _completer;
-  AuthenticationClient(this._secureStore, this._authentificationApi);
+  SessionClient(this._secureStore, this._aiAnalyticsAPI);
   void _complete() {
     if (_completer != null) {
       if (!_completer!.isCompleted) {
@@ -21,38 +21,38 @@ class AuthenticationClient {
     }
   }
 
-  Future<String?> get accesToken async {
+  Future<Session?> get currentSession async {
     if (_completer != null) {
       await _completer!.future;
     }
     _completer = Completer();
     bool keepSession = GetIt.instance<bool>();
     final String? data = await _secureStore.read(key: "SESSION");
+
     if (data != null) {
       final Session session = Session.fromJson(jsonDecode(data));
       final DateTime currentDay = DateTime.now();
-      final DateTime createdAt = session.createdAt;
-      final int expiresIn = session.expiresIn;
-      final int diff = currentDay.difference(createdAt).inSeconds;
+      final int currentTimeStamp = currentDay.millisecondsSinceEpoch ~/ 1000;
+      final int expiresAt = session.expiresAt;
       if (!keepSession) {
-        if (expiresIn - diff <= 0) {
+        if (currentTimeStamp > expiresAt) {
           _complete();
           await sigOutSession();
           return null;
         }
         _complete();
-        return session.token;
+        return session;
       }
-      if (expiresIn - diff >= 60) {
+      if (currentTimeStamp < expiresAt) {
         _complete();
-        return session.token;
+        return session;
       }
       final HttpResponse<AuthenticationResponse> response =
-          await _authentificationApi.refreshToken(session.token);
+          await _aiAnalyticsAPI.refreshToken(session.token);
       if (response.data != null) {
-        await saveSession(response.data!);
+        Session session = await saveSession(response.data!);
         _complete();
-        return response.data!.token;
+        return session;
       }
       _complete();
       return null;
@@ -61,15 +61,12 @@ class AuthenticationClient {
     return null;
   }
 
-  Future<void> saveSession(
+  Future<Session> saveSession(
       AuthenticationResponse authenticationResponse) async {
-    final Session session = Session(
-      token: authenticationResponse.token,
-      expiresIn: authenticationResponse.expiresIn,
-      createdAt: DateTime.now(),
-    );
+    final Session session = Session.fromAuthResponse(authenticationResponse);
     final String data = jsonEncode(session.toJson());
     await _secureStore.write(key: 'SESSION', value: data);
+    return session;
   }
 
   Future<void> sigOutSession() async {

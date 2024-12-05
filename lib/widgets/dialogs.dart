@@ -6,6 +6,51 @@ import 'package:callinteligence/widgets/text_fields.dart';
 import 'package:flutter/material.dart';
 
 abstract class Dialogs {
+  static userNotFound(BuildContext context) async {
+    Responsive responsive = Responsive(context);
+    LightTheme lightTheme = LightTheme();
+    await showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              shadowColor: Theme.of(context).scaffoldBackgroundColor,
+              title: Center(
+                child: Text(
+                  'Error - Usuario no encontrado',
+                  style: TextStyle(
+                      color: lightTheme.hangUpCollor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: responsive.dp(1.9)),
+                ),
+              ),
+              content: SizedBox(
+                height: responsive.hp(15),
+                width: responsive.wp(65),
+                child: Center(
+                  child: Text(
+                      "El correo electrónico y/o la contraseña son incorrectos"),
+                ),
+              ),
+              actions: [
+                Center(
+                  child: Button(
+                      width: responsive.wp(45),
+                      height: responsive.hp(5),
+                      color: lightTheme.hangUpCollor,
+                      content: Text(
+                        'OK',
+                        style: TextStyle(
+                            color: lightTheme.backgroundColor,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      action: () {
+                        Navigator.pop(context);
+                      }),
+                )
+              ],
+            ));
+  }
+
   static addNewUser(BuildContext context) async {
     Responsive responsive = Responsive(context);
     LightTheme lightTheme = LightTheme();

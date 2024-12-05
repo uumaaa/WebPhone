@@ -12,7 +12,7 @@ class SimilarUsersPanel extends StatelessWidget {
     LightTheme lightTheme = LightTheme();
     return Container(
       width: responsive.wp(88),
-      height: responsive.hp(37),
+      height: responsive.hp(38),
       padding: EdgeInsets.symmetric(
           horizontal: responsive.wp(3), vertical: responsive.hp(3)),
       decoration: BoxDecoration(

@@ -1,12 +1,22 @@
+import 'package:callinteligence/api/ai_analytics_api.dart';
+import 'package:callinteligence/session/session_client.dart';
+import 'package:callinteligence/model/session.dart';
+import 'package:callinteligence/model/auth_response.dart';
 import 'package:callinteligence/pages/controller_page.dart';
 import 'package:callinteligence/theme/light_theme.dart';
+import 'package:callinteligence/utils/logs.dart';
 import 'package:callinteligence/utils/responsive.dart';
 import 'package:callinteligence/widgets/buttons.dart';
+import 'package:callinteligence/widgets/dialogs.dart';
 import 'package:callinteligence/widgets/link.dart';
 import 'package:callinteligence/widgets/separator.dart';
 import 'package:callinteligence/widgets/text_fields.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
 import 'package:ionicons/ionicons.dart';
+
+import '../model/http_response.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -20,10 +30,49 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   late bool rememberMe;
+  late bool canLogIn;
   @override
   void initState() {
     rememberMe = false;
+    canLogIn = false;
+    emailController.addListener(verifyInputs);
+    passwordController.addListener(verifyInputs);
     super.initState();
+  }
+
+  void verifyInputs() {
+    setState(() {
+      canLogIn = false;
+    });
+    final String userEmail = emailController.text;
+    final String userPassword = passwordController.text;
+    if (userEmail.isNotEmpty &&
+        userEmail.isEmail &&
+        userPassword.isNotEmpty &&
+        userPassword.length > 8) {
+      setState(() {
+        canLogIn = true;
+      });
+    }
+  }
+
+  Future<void> logIn() async {
+    final String userEmail = emailController.text;
+    final String userPassword = passwordController.text;
+    final AIAnalyticsAPI api = GetIt.instance<AIAnalyticsAPI>();
+    final SessionClient sessionClient = GetIt.instance<SessionClient>();
+    HttpResponse<AuthenticationResponse> response =
+        await api.getToken(userEmail, userPassword);
+    if (response.data == null) {
+      Dialogs.userNotFound(context);
+      return;
+    }
+    if (response.httpError != null) {
+      Dialogs.userNotFound(context);
+      return;
+    }
+    final Session _ = await sessionClient.saveSession(response.data!);
+    await Navigator.popAndPushNamed(context, ControllerPage.routeName);
   }
 
   @override
@@ -165,19 +214,14 @@ class _LoginPageState extends State<LoginPage> {
                         height: responsive.hp(6),
                       ),
                       MainButton(
-                        width: responsive.wp(50),
-                        height: responsive.hp(6),
-                        fontSize: responsive.dp(2),
-                        text: "INGRESAR",
-                        action: () async {
-                          await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ControllerPage(),
-                            ),
-                          );
-                        },
-                      ),
+                          width: responsive.wp(50),
+                          height: responsive.hp(6),
+                          fontSize: responsive.dp(2),
+                          text: "INGRESAR",
+                          isEnabled: canLogIn,
+                          action: () async => {
+                                await logIn(),
+                              }),
                     ],
                   ),
                 ),
