@@ -6,6 +6,38 @@ import 'package:callinteligence/widgets/text_fields.dart';
 import 'package:flutter/material.dart';
 
 abstract class Dialogs {
+  static alert(BuildContext context, Widget title, Widget content,
+      {List<Widget>? actions}) async {
+    Responsive responsive = Responsive(context);
+    LightTheme lightTheme = LightTheme();
+    await showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              shadowColor: Theme.of(context).scaffoldBackgroundColor,
+              title: title,
+              content: content,
+              actions: actions ??
+                  [
+                    Center(
+                      child: Button(
+                          width: responsive.wp(45),
+                          height: responsive.hp(5),
+                          color: lightTheme.hangUpCollor,
+                          content: Text(
+                            'OK',
+                            style: TextStyle(
+                                color: lightTheme.backgroundColor,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          action: () {
+                            Navigator.pop(context);
+                          }),
+                    )
+                  ],
+            ));
+  }
+
   static userNotFound(BuildContext context) async {
     Responsive responsive = Responsive(context);
     LightTheme lightTheme = LightTheme();

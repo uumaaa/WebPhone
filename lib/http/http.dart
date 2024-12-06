@@ -1,7 +1,6 @@
 import 'package:callinteligence/model/http_response.dart';
 import 'package:callinteligence/utils/logs.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 
 class Http {
   late Dio _dio;
@@ -19,7 +18,8 @@ class Http {
     try {
       Response response = await _dio.request(
         path,
-        options: Options(headers: headers, method: method),
+        options:
+            Options(headers: headers, method: method, preserveHeaderCase: true),
         queryParameters: queryParameters,
         data: data,
       );

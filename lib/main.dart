@@ -1,4 +1,3 @@
-import 'package:callinteligence/data/actions_list.dart';
 import 'package:callinteligence/helpers/dependency_injection.dart';
 import 'package:callinteligence/pages/controller_page.dart';
 import 'package:callinteligence/pages/login_page.dart';
@@ -20,8 +19,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => ThemeProvider(),
       builder: (context, _) {
-        final ThemeProvider themeProvider =
-            Provider.of<ThemeProvider>(context, listen: true);
+        Provider.of<ThemeProvider>(context, listen: true);
         return MaterialApp(
           title: 'CallIntelligence',
           debugShowCheckedModeBanner: false,

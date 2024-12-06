@@ -4,7 +4,6 @@ import 'package:callinteligence/model/session.dart';
 import 'package:callinteligence/model/auth_response.dart';
 import 'package:callinteligence/pages/controller_page.dart';
 import 'package:callinteligence/theme/light_theme.dart';
-import 'package:callinteligence/utils/logs.dart';
 import 'package:callinteligence/utils/responsive.dart';
 import 'package:callinteligence/widgets/buttons.dart';
 import 'package:callinteligence/widgets/dialogs.dart';

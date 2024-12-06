@@ -9,11 +9,19 @@ pluginManagement {
     settings.ext.flutterSdkPath = flutterSdkPath()
 
     includeBuild("${settings.ext.flutterSdkPath}/packages/flutter_tools/gradle")
-
     repositories {
+        gradlePluginPortal()
         google()
         mavenCentral()
-        gradlePluginPortal()
+        maven {
+            url = uri("https://storage.googleapis.com/r8-releases/raw")
+        }
+
+    }
+    buildscript {
+        dependencies {
+            classpath("com.android.tools:r8:8.2.20-dev")
+        }
     }
 }
 
